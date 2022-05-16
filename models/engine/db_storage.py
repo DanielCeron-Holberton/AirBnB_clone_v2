@@ -13,10 +13,6 @@ from models.review import Review
 from models.amenity import Amenity
 
 
-class_dict = {'City': City, 'State': State, 'User': User,
-              'Place': Place, 'Review': Review, 'Amenity': Amenity}
-
-
 class DBStorage():
     """Engine class"""
     __engine = None
@@ -36,6 +32,16 @@ class DBStorage():
 
     def all(self, cls=None):
         """Query for all classes"""
+        from models.city import City
+        from models.state import State
+        from models.user import User
+        from models.place import Place
+        from models.review import Review
+        from models.amenity import Amenity
+
+        class_dict = {'City': City, 'State': State, 'User': User,
+                      'Place': Place, 'Review': Review, 'Amenity': Amenity}
+
         obj_dict = {}
         if cls:
             try:
@@ -73,5 +79,9 @@ class DBStorage():
     def reload(self):
         """Creates session on start"""
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(self.__engine, expire_on_commit=False)
+        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)
+
+    def close(self):
+        """Close the session"""
+        self.__session.remove()
