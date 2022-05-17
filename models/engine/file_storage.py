@@ -61,9 +61,16 @@ class FileStorage:
             pass
 
     def delete(self, obj=None):
-        """Method to delete a class"""
+        """Delete an object"""
         if obj is None:
+            return
+        try:
+            for key, value in FileStorage.__objects.items():
+                if obj == value:
+                    del FileStorage.__objects[key]
+        except:
             pass
 
-        del FileStorage.__objects[obj.__class__.__name__ + '.' + obj.id]
-        self.save()
+    def close(self):
+        """call reload() method for deserializing the JSON file to objects"""
+        self.reload()
