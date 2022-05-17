@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 """Module contains database engine"""
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+from models.place import Place
+from models.user import User
+from models.state import State
 from models.base_model import BaseModel, Base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import (create_engine)
 from os import getenv
 from models.base_model import BaseModel
-from models.city import City
-from models.state import State
-from models.user import User
-from models.place import Place
-from models.review import Review
-from models.amenity import Amenity
 
 
 class DBStorage():
@@ -32,32 +32,20 @@ class DBStorage():
 
     def all(self, cls=None):
         """Query for all classes"""
-        from models.city import City
-        from models.state import State
-        from models.user import User
-        from models.place import Place
-        from models.review import Review
-        from models.amenity import Amenity
 
         class_dict = {'City': City, 'State': State, 'User': User,
                       'Place': Place, 'Review': Review, 'Amenity': Amenity}
 
         obj_dict = {}
-        if cls:
-            try:
-                query_result = self.__session.query(cls).all()
-            except Exception:
-                print("Class not found")
-                pass
-        else:
-            try:
-                for key in class_dict.keys():
-                    value = class_dict.get(key)
+
+        try:
+            for key, value in class_dict.items():
+                if cls is None or key == cls:
                     query_result = self.__session.query(value).all()
-            except Exception:
-                pass
-        for obj in query_result:
-            obj_dict[obj.__class__.__name__+'.' + obj.id] = obj
+                    for obj in query_result:
+                        obj_dict[obj.__class__.__name__+'.' + obj.id] = obj
+        except Exception:
+            pass
 
         return obj_dict
 
@@ -85,3 +73,4 @@ class DBStorage():
     def close(self):
         """Close the session"""
         self.__session.remove()
+# --------------------------------------------------------------------------------------------
