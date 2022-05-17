@@ -138,8 +138,9 @@ class HBNBCommand(cmd.Cmd):
         for key, value in new_dict.items():
             setattr(new_instance, key, value)
 
-        new_instance.save()
+        storage.new(new_instance)
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -223,9 +224,11 @@ class HBNBCommand(cmd.Cmd):
                 return
             for k, v in storage.all().items():
                 if k.split('.')[0] == args:
+                    del v.__dict__['_sa_instance_state']
                     print_list.append(str(v))
         else:
             for k, v in storage.all().items():
+                del v.__dict__['_sa_instance_state']
                 print_list.append(str(v))
 
         print(print_list)
