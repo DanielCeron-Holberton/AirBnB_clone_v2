@@ -15,7 +15,7 @@ from models.review import Review
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
-    # determines prompt for interactive/non-interactive modes
+    # Interactive/non-interactive modes
     prompt = '(hbnb) ' if sys.__stdin__.isatty() else ''
 
     classes = {
@@ -130,7 +130,7 @@ class HBNBCommand(cmd.Cmd):
         for i in range(len(parms_splitted)):
             temp_list = parms_splitted[i].split('=')
             temp_list[1] = temp_list[1].replace('_', ' ')
-            if '\'' == temp_list[1][0]:
+            if "\"" == temp_list[1][0]:
                 temp_list[1] = temp_list[1][1:-1]
             new_dict[temp_list[0]] = temp_list[1]
 
@@ -138,7 +138,7 @@ class HBNBCommand(cmd.Cmd):
         for key, value in new_dict.items():
             setattr(new_instance, key, value)
 
-        storage.save()
+        new_instance.save()
         print(new_instance.id)
 
     def help_create(self):
@@ -218,14 +218,14 @@ class HBNBCommand(cmd.Cmd):
 
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
+            if args not in self.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)
