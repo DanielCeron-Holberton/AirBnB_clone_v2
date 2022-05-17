@@ -1,10 +1,16 @@
 #!/usr/bin/python3
 """Module contains database engine"""
-
+from models.base_model import BaseModel, Base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import (create_engine)
 from os import getenv
-from models.base_model import BaseModel, Base
+from models.base_model import BaseModel
+from models.city import City
+from models.state import State
+from models.user import User
+from models.place import Place
+from models.review import Review
+from models.amenity import Amenity
 
 
 class DBStorage():
@@ -18,11 +24,11 @@ class DBStorage():
         passwd = getenv('HBNB_MYSQL_PWD')
         host = getenv('HBNB_MYSQL_HOST')
         db = getenv('HBNB_MYSQL_DB')
-        env = getenv('HBNB_ENV')
+        env = getenv('HBNB_MYSQL_ENV')
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'.format(
             user, passwd, host, db), pool_pre_ping=True)
         if env == "test":
-            Base.metadata.drop_all(bind=self.__engine)
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """Query for all classes"""
@@ -41,6 +47,7 @@ class DBStorage():
             try:
                 query_result = self.__session.query(cls).all()
             except Exception:
+                print("Class not found")
                 pass
         else:
             try:
@@ -57,7 +64,7 @@ class DBStorage():
     def new(self, obj):
         """Creates and save a new object"""
         self.__session.add(obj)
-        # self.save()
+        self.save()
 
     def save(self):
         """Commit the changes to the database"""
@@ -67,7 +74,7 @@ class DBStorage():
         """Delete the object"""
         if obj:
             self.__session.delete(obj)
-        # self.save()
+        self.save()
 
     def reload(self):
         """Creates session on start"""
