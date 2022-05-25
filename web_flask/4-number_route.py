@@ -38,11 +38,10 @@ def python_is_default_cool(text='is cool'):
     return 'Python {}'.format(text)
 
 
-@app.route('/number/<n>', strict_slashes=False)
+@app.route('/number/<int:n>', strict_slashes=False)
 def is_a_number(n):
     """Returns string if n is a number."""
-    if isinstance(n, int):
-        return '{} is a number'.format(n)
+    return '{} is a number'.format(n)
 
 
 if __name__ == '__main__':
