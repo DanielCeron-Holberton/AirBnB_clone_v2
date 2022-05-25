@@ -31,23 +31,23 @@ class DBStorage():
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Query for all classes"""
+        """ Query to get all objects depending of the class """
+        classes = ['State', 'City', 'User', 'Amenity', 'Place', 'Review']
+        all_objs = {}
 
-        class_dict = {'City': City, 'State': State, 'User': User,
-                      'Place': Place, 'Review': Review, 'Amenity': Amenity}
+        if cls:
+            query = self.__session.query(cls).all()
+            for obj in query:
+                form = "{}.{}".format(obj.__class__, obj.id)
+                all_objs[form] = obj
+        else:
+            for class_name in classes:
+                query = self.__session.query(class_name).all()
+                for obj in query:
+                    form = "{}.{}".format(obj.__class__, obj.id)
+                    all_objs[form] = obj
 
-        obj_dict = {}
-
-        try:
-            for key, value in class_dict.items():
-                if cls is None or key == cls:
-                    query_result = self.__session.query(value).all()
-                    for obj in query_result:
-                        obj_dict[obj.__class__.__name__+'.' + obj.id] = obj
-        except Exception:
-            pass
-
-        return obj_dict
+        return all_objs
 
     def new(self, obj):
         """Creates and save a new object"""
