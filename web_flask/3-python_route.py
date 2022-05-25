@@ -33,7 +33,7 @@ def python_is_cool(text):
 
 @app.route('/python', strict_slashes=False)
 def python_is_cool(text='is cool'):
-    """Print the text on the route"""
+    """Print the text on the default route"""
     text = text.replace("_", " ")
     return 'Python {}'.format(text)
 
