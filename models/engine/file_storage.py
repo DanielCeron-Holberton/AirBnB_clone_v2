@@ -9,19 +9,23 @@ class FileStorage:
     __objects = {}
 
     def all(self, cls=None):
-        """Returns a dictionary of models currently in storage"""
-
-        obj = FileStorage.__objects
+        """ Query to get all objects depending of the class """
+        classes = ['State', 'City', 'User', 'Amenity', 'Place', 'Review']
+        all_objs = {}
 
         if cls:
-            filtered_obj = {}
-            for key in obj.keys():
-                splitted_key = key.split('.')
-                if splitted_key[0] == cls.__name__:
-                    filtered_obj[key] = obj[key]
-            return filtered_obj
+            query = self.__session.query(cls).all()
+            for obj in query:
+                form = "{}.{}".format(obj.__class__, obj.id)
+                all_objs[form] = obj
+        else:
+            for class_name in classes:
+                query = self.__session.query(class_name).all()
+                for obj in query:
+                    form = "{}.{}".format(obj.__class__, obj.id)
+                    all_objs[form] = obj
 
-        return obj
+        return all_objs
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
