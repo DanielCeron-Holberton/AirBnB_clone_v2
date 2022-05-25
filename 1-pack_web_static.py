@@ -14,7 +14,7 @@ def do_pack():
         local("mkdir -p versions")
         date = datetime.now().strftime("%Y%m%d%H%M%S")
         path_name = "versions/web_static_{}.tgz".format(date)
-        _gzip = local("tar -cvzf {} web_static".format(rout))
+        _gzip = local("tar -cvzf {} web_static".format(path_name))
         return path_name
     except Exception:
         return None
